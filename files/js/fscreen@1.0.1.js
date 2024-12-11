@@ -1,6 +1,6 @@
 // A manual UMD build of Fscreen: https://github.com/rafrex/fscreen
 
-(function(global) {
+(function (global) {
     'use strict';
 
     var key = {
@@ -42,11 +42,13 @@
         get fullscreenEnabled() {
             return Boolean(doc[vendor[key.fullscreenEnabled]]);
         },
-        set fullscreenEnabled(val) {},
+        set fullscreenEnabled(val) {
+        },
         get fullscreenElement() {
             return doc[vendor[key.fullscreenElement]];
         },
-        set fullscreenElement(val) {},
+        set fullscreenElement(val) {
+        },
         get onfullscreenchange() {
             return doc[('on' + vendor[key.fullscreenchange]).toLowerCase()];
         },

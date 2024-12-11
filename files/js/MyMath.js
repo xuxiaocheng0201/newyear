@@ -5,7 +5,7 @@
  * MyMath.js
  * -----------
  * Handy math/trig reference.
- * 
+ *
  * Author: Caleb Miller
  *         caleb@caleb-miller.com
  */

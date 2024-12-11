@@ -73,7 +73,6 @@ const stages = [
 ];
 
 
-
 // Fullscreen helpers, using Fscreen for prefixes.
 function fullscreenEnabled() {
     return fscreen.fullscreenEnabled;
@@ -105,8 +104,6 @@ fscreen.addEventListener('fullscreenchange', () => {
 });
 
 
-
-
 // Simple state container; the source of truth.
 const store = {
     _listeners: new Set(),
@@ -130,9 +127,9 @@ const store = {
                 '3' // Desktop default
                 :
                 IS_HEADER ?
-                '1.2' // Profile header default (doesn't need to be an int)
-                :
-                '2', // Mobile default
+                    '1.2' // Profile header default (doesn't need to be an int)
+                    :
+                    '2', // Mobile default
             autoLaunch: false,
             finale: false,
             skyLighting: SKY_LIGHT_NORMAL + '',
@@ -305,7 +302,6 @@ const shellSizeSelector = () => +store.state.config.size;
 const finaleSelector = () => store.state.config.finale;
 const skyLightingSelector = () => +store.state.config.skyLighting;
 const scaleFactorSelector = () => store.state.config.scaleFactor;
-
 
 
 // Help Content
@@ -525,7 +521,6 @@ appNodes.helpModalOverlay.addEventListener('click', () => {
         openHelpTopic: null
     });
 });
-
 
 
 // Constant derivations
@@ -859,9 +854,9 @@ function init() {
     appNodes.shellSize.innerHTML = options;
 
     setOptionsForSelect(appNodes.quality, [{
-            label: '低',
-            value: QUALITY_LOW
-        },
+        label: '低',
+        value: QUALITY_LOW
+    },
         {
             label: '正常',
             value: QUALITY_NORMAL
@@ -873,9 +868,9 @@ function init() {
     ]);
 
     setOptionsForSelect(appNodes.skyLighting, [{
-            label: '无',
-            value: SKY_LIGHT_NONE
-        },
+        label: '无',
+        value: SKY_LIGHT_NONE
+    },
         {
             label: '暗淡',
             value: SKY_LIGHT_DIM
@@ -890,10 +885,10 @@ function init() {
     setOptionsForSelect(
         appNodes.scaleFactor,
         [0.5, 0.62, 0.75, 0.9, 1.0, 1.5, 2.0]
-        .map(value => ({
-            value: value.toFixed(2),
-            label: `${value*100}%`
-        }))
+            .map(value => ({
+                value: value.toFixed(2),
+                label: `${value * 100}%`
+            }))
     );
 
     // Begin simulation
@@ -1111,6 +1106,7 @@ function seqSmallBarrage() {
 
     return 3400 + barrageCount * 120;
 }
+
 seqSmallBarrage.cooldown = 15000;
 seqSmallBarrage.lastCalled = Date.now();
 
@@ -1634,8 +1630,6 @@ function createBurst(count, particleFactory, startAngle = 0, arcLength = PI_2) {
 }
 
 
-
-
 // Various star effects.
 // These are designed to be attached to a star's `onDeath` event.
 
@@ -1714,7 +1708,6 @@ function crackleEffect(star) {
         );
     });
 }
-
 
 
 /**
@@ -1929,7 +1922,8 @@ class Shell {
             // Rings have positional randomness, but are rotated randomly
             if (this.ring) {
                 const ringStartAngle = Math.random() * Math.PI;
-                const ringSquash = Math.pow(Math.random(), 2) * 0.85 + 0.15;;
+                const ringSquash = Math.pow(Math.random(), 2) * 0.85 + 0.15;
+                ;
 
                 createParticleArc(0, PI_2, this.starCount, 0, angle => {
                     // Create a ring, squashed horizontally
@@ -2029,7 +2023,6 @@ class Shell {
 }
 
 
-
 const BurstFlash = {
     active: [],
     _pool: [],
@@ -2053,7 +2046,6 @@ const BurstFlash = {
         this._pool.push(instance);
     }
 };
-
 
 
 // Helper to generate objects for storing active particles.
@@ -2166,10 +2158,9 @@ const Spark = {
 };
 
 
-
 const soundManager = {
     baseURL: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/329180/',
-    ctx: new(window.AudioContext || window.webkitAudioContext),
+    ctx: new (window.AudioContext || window.webkitAudioContext),
     sources: {
         lift: {
             volume: 1,
@@ -2337,8 +2328,6 @@ const soundManager = {
         bufferSource.start(0);
     }
 };
-
-
 
 
 // Kick things off.

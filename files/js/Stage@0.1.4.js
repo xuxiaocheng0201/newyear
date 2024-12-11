@@ -8,15 +8,13 @@
 // - <canvas> elements have `touchAction: auto` style applied.
 
 
-
-
 // Inlined Stage.js dependency: Ticker.js
 
 /**
  * Ticker.js
  * -----------
  * requestAnimationFrame helper. Provides elapsed time between frames and a lag compensation multiplier to callbacks.
- * 
+ *
  * Author: Caleb Miller
  *         caleb@caleb-miller.com
  */
@@ -33,7 +31,7 @@
  *
  * This is no replacement for robust canvas drawing libraries; it's designed to be as lightweight as possible and defers
  * full rendering burden to user.
- * 
+ *
  * Author: Caleb Miller
  *         caleb@caleb-miller.com
  */
@@ -96,7 +94,6 @@ const Ticker = (function TickerFactory(window) {
     return Ticker;
 
 })(window);
-
 
 
 const Stage = (function StageFactory(window, document, Ticker) {
