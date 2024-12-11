@@ -114,7 +114,7 @@ const soundManager = {
         // Disallow starting new sounds if sound is disabled, app is running in slow motion, or paused.
         // Slow motion check has some wiggle room in case user doesn't finish dragging the speed bar
         // *all* the way back.
-        if (!canPlaySoundSelector() || simSpeed < 0.95) {
+        if (!isRunning() || simSpeed < 0.95) {
             return;
         }
 
