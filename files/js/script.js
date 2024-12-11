@@ -14,6 +14,7 @@ const IS_HIGH_END_DEVICE = (() => {
     const minCount = window.innerWidth <= 1024 ? 4 : 8;
     return hwConcurrency >= minCount;
 })();
+
 // Prevent canvases from getting too large on ridiculous screen sizes.
 // 8K - can restrict this if needed
 const MAX_WIDTH = 7680;
@@ -27,23 +28,25 @@ function getDefaultScaleFactor() {
     return 1;
 }
 
+function getDefaultShellSize() {
+    if (IS_DESKTOP) return '3'; // Desktop default
+    if (IS_HEADER) return '1.2'; // Profile header default (doesn't need to be an int)
+    return '2'; // Mobile default
+}
+
 // Width/height values that take scale into account.
 // USE THESE FOR DRAWING POSITIONS
 let stageW, stageH;
 
-const QUALITY_LOW = 1;
+// const QUALITY_LOW = 1;
 const QUALITY_NORMAL = 2;
 const QUALITY_HIGH = 3;
-
 // All quality globals will be overwritten and updated via `configDidUpdate`.
 let quality = IS_HIGH_END_DEVICE ? QUALITY_HIGH : QUALITY_NORMAL;
 let isLowQuality = false;
-let isNormalQuality = !IS_HIGH_END_DEVICE;
+// let isNormalQuality = !IS_HIGH_END_DEVICE;
 let isHighQuality = IS_HIGH_END_DEVICE;
 
-const SKY_LIGHT_NONE = 0;
-const SKY_LIGHT_DIM = 1;
-const SKY_LIGHT_NORMAL = 2;
 
 const PI_2 = Math.PI * 2;
 const PI_HALF = Math.PI * 0.5;
@@ -65,22 +68,12 @@ const store = {
     },
 
     state: {
-        // will be unpaused in init()
+        // will be un paused in init()
         paused: true,
-        openHelpTopic: null,
         // Note that config values used for <select>s must be strings, unless manually converting values to strings
         // at render time, and parsing on change.
         config: {
-            size: IS_DESKTOP ?
-                '3' // Desktop default
-                :
-                IS_HEADER ?
-                    '1.2' // Profile header default (doesn't need to be an int)
-                    :
-                    '2', // Mobile default
-            autoLaunch: false,
-            skyLighting: SKY_LIGHT_NORMAL + '',
-            scaleFactor: getDefaultScaleFactor()
+            autoLaunch: false
         }
     },
 
@@ -94,6 +87,7 @@ const store = {
         this._listeners.add(listener);
     },
 };
+const isRunning = (state = store.state) => !state.paused;
 
 // Actions
 // ---------
@@ -124,21 +118,9 @@ function updateConfig(nextConfig) {
 
 // Map config to various properties & apply side effects
 function configDidUpdate() {
-    if (skyLightingSelector() === SKY_LIGHT_NONE) {
-        appNodes.canvasContainer.style.backgroundColor = '#000';
-    }
-
     Spark.drawWidth = isHighQuality ? 0.75 : 1;
 }
 
-// Selectors
-// -----------
-
-const isRunning = (state = store.state) => !state.paused;
-// Convert shell size to number.
-const shellSizeSelector = () => +store.state.config.size;
-const skyLightingSelector = () => +store.state.config.skyLighting;
-const scaleFactorSelector = () => store.state.config.scaleFactor;
 
 
 // Render app UI / keep in sync with state
@@ -177,8 +159,8 @@ function init() {
 
 
 // Launches a shell from a user pointer event, based on state.config
-function launchShellFromConfig(event) {
-    const shell = new Shell(randomShell(shellSizeSelector()));
+function launchShell(event) {
+    const shell = new Shell(randomShell(getDefaultShellSize()));
     const w = mainStage.width;
     const h = mainStage.height;
 
@@ -196,7 +178,7 @@ mainStage.addEventListener('pointerstart', event => {
     if (updateSpeedFromEvent(event)) {
         isUpdatingSpeed = true;
     } else if (event.onCanvas) {
-        launchShellFromConfig(event);
+        launchShell(event);
     }
 });
 mainStage.addEventListener('pointerend', _ => {
@@ -223,7 +205,7 @@ function handleResize() {
     appNodes.stageContainer.style.height = containerH + 'px';
     stages.forEach(stage => stage.resize(containerW, containerH));
     // Account for scale
-    const scaleFactor = scaleFactorSelector();
+    const scaleFactor = getDefaultScaleFactor();
     stageW = containerW / scaleFactor;
     stageH = containerH / scaleFactor;
 }
@@ -238,7 +220,7 @@ let autoLaunchTime = 0;
 
 function updateSpeedFromEvent(event) {
     if (isUpdatingSpeed || event.y >= mainStage.height - 44) {
-        // On phones it's hard to hit the edge pixels in order to set speed at 0 or 1, so some padding is provided to make that easier.
+        // On phones, it's hard to hit the edge pixels in order to set speed at 0 or 1, so some padding is provided to make that easier.
         const edge = 16;
         const newSpeed = (event.x - edge) / (mainStage.width - edge * 2);
         simSpeed = Math.min(Math.max(newSpeed, 0), 1);
@@ -392,12 +374,10 @@ function render(speed) {
     const trailsCtx = trailsStage.ctx;
     const mainCtx = mainStage.ctx;
 
-    if (skyLightingSelector() !== SKY_LIGHT_NONE) {
-        colorSky(speed);
-    }
+    colorSky(speed);
 
     // Account for high DPI screens, and custom scale factor.
-    const scaleFactor = scaleFactorSelector();
+    const scaleFactor = getDefaultScaleFactor();
     trailsCtx.scale(dpr * scaleFactor, dpr * scaleFactor);
     mainCtx.scale(dpr * scaleFactor, dpr * scaleFactor);
 
@@ -494,7 +474,7 @@ const targetSkyColor = {
 
 function colorSky(speed) {
     // The maximum r, g, or b value that will be used (255 would represent no maximum)
-    const maxSkySaturation = skyLightingSelector() * 15;
+    const maxSkySaturation = 30;
     // How many stars are required in total to reach maximum sky brightness
     const maxStarCount = 500;
     let totalStarCount = 0;
@@ -560,20 +540,11 @@ const BurstFlash = {
 };
 
 
-// CodePen profile header doesn't need audio, just initialize.
-if (IS_HEADER) {
-    init();
-} else {
-    // Allow status to render, then preload assets and start app.
-    setTimeout(() => {
-        soundManager.preload()
-            .then(
-                init,
-                reason => {
-                    // Codepen preview doesn't like to load the audio, so just init to fix the preview for now.
-                    init();
-                    return Promise.reject(reason);
-                }
-            );
-    }, 0);
-}
+// Allow status to render, then preload assets and start app.
+setTimeout(() => {
+    soundManager.preload().then(init, reason => {
+        // Codepen preview doesn't like to load the audio, so just init to fix the preview for now.
+        init();
+        return Promise.reject(reason);
+    });
+}, 0);

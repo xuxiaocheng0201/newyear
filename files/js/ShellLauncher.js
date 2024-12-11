@@ -626,7 +626,7 @@ class Shell {
             // when a value too small is given though, so instead of basing it on proportions, we just
             // look at the difference in size and map it to a range known to sound good.
             const maxDiff = 2;
-            const sizeDifferenceFromMaxSize = Math.min(maxDiff, shellSizeSelector() - this.shellSize);
+            const sizeDifferenceFromMaxSize = Math.min(maxDiff, getDefaultShellSize() - this.shellSize);
             const soundScale = (1 - sizeDifferenceFromMaxSize / maxDiff) * 0.3 + 0.7;
             soundManager.playSound('burst', soundScale);
         }

@@ -80,7 +80,7 @@ function getRandomShellPositionV() {
 }
 
 function getRandomShellSize() {
-    const baseSize = shellSizeSelector();
+    const baseSize = getDefaultShellSize();
     const maxVariance = Math.min(2.5, baseSize);
     const variance = Math.random() * maxVariance;
     const size = baseSize - variance;
