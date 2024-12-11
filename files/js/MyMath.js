@@ -11,9 +11,7 @@
  */
 
 const MyMath = (function MyMathFactory(Math) {
-
     const MyMath = {};
-
 
     // degree/radian conversion constants
     MyMath.toDeg = 180 / Math.PI;
@@ -66,7 +64,5 @@ const MyMath = (function MyMathFactory(Math) {
         return Math.min(Math.max(num, min), max);
     };
 
-
     return MyMath;
-
 })(Math);
