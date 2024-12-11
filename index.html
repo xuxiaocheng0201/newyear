@@ -19,20 +19,7 @@
     <meta name="msapplication-TileColor" content="#000000">
     <link href="files/css/main.css" rel="stylesheet">
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script>
-        let firstTime = true;
-        console.log(firstTime);
-
-        function bodyPlayMusic() {
-            if (firstTime) {
-                firstTime = false;
-                audio.play();
-                console.log(firstTime);
-            }
-        }
-    </script>
 </head>
-<!-- onclick="bodyPlayMusic()" -->
 
 <body>
 
@@ -87,76 +74,6 @@
             <canvas id="trails-canvas"></canvas>
             <canvas id="main-canvas"></canvas>
         </div>
-
-        <div class="menu hide">
-            <div class="menu__inner-wrap">
-
-                <div class="menu__header">设置</div>
-
-                <form>
-                    <div class="form-option form-option--select">
-                        <label class="shell-type-label">烟花类型</label>
-                        <label>
-                            <select class="shell-type"></select>
-                        </label>
-                    </div>
-                    <div class="form-option form-option--select">
-                        <label class="shell-size-label">烟花大小</label>
-                        <label>
-                            <select class="shell-size"></select>
-                        </label>
-                    </div>
-                    <div class="form-option form-option--select">
-                        <label class="quality-ui-label">画质</label>
-                        <label>
-                            <select class="quality-ui"></select>
-                        </label>
-                    </div>
-                    <div class="form-option form-option--select">
-                        <label class="sky-lighting-label">天空照明</label>
-                        <label>
-                            <select class="sky-lighting"></select>
-                        </label>
-                    </div>
-                    <div class="form-option form-option--select">
-                        <label class="scaleFactor-label">规模</label>
-                        <label>
-                            <select class="scaleFactor"></select>
-                        </label>
-                    </div>
-                    <div class="form-option form-option--checkbox">
-                        <label class="auto-launch-label">自动发射</label>
-                        <label>
-                            <input class="auto-launch" type="checkbox">
-                        </label>
-                    </div>
-                    <div class="form-option form-option--checkbox form-option--finale-mode">
-                        <label class="finale-mode-label">结局模式</label>
-                        <label>
-                            <input class="finale-mode" type="checkbox">
-                        </label>
-                    </div>
-                    <div class="form-option form-option--checkbox">
-                        <label class="hide-controls-label">隐藏控制器</label>
-                        <label>
-                            <input class="hide-controls" type="checkbox">
-                        </label>
-                    </div>
-                    <div class="form-option form-option--checkbox form-option--fullscreen">
-                        <label class="fullscreen-label">全屏</label>
-                        <label>
-                            <input class="fullscreen" type="checkbox">
-                        </label>
-                    </div>
-                    <div class="form-option form-option--checkbox">
-                        <label class="long-exposure-label">打开快门</label>
-                        <label>
-                            <input class="long-exposure" type="checkbox">
-                        </label>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
     <div class="help-modal">
         <div class="help-modal__overlay"></div>
@@ -168,10 +85,10 @@
     </div>
 </div>
 
-
-<!-- partial -->
 <script src="files/js/fscreen%401.0.1.js"></script>
 <script src="files/js/Stage%400.1.4.js"></script>
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/screenfull.js/5.2.0/screenfull.min.js"></script>-->
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/stage.js/0.8.10/stage.web.min.js"></script>-->
 <script src="files/js/MyMath.js"></script>
 <script src="files/js/script.js"></script>
 

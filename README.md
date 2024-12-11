@@ -1,6 +1,4 @@
-# newyear
-This project is forked form corestudi0.github.io
+# NewYear
 
->
->[出处**corestudi0.github.io**](https://github.com/corestudi0/corestudi0.github.io)
->
+This project is forked form https://github.com/NestorRay/newyear
+And that project is forked form https://github.com/corestudi0/corestudi0.github.io
