@@ -59,13 +59,13 @@ const stages = [
 
 // Fullscreen helpers, using Fscreen for prefixes.
 function fullscreenEnabled() {
-    return fscreen.fullscreenEnabled;
+    return screenfull.isEnabled;
 }
 
 // Note that fullscreen state is synced to store, and the store should be the source
 // of truth for whether the app is in fullscreen mode or not.
 function isFullscreen() {
-    return !!fscreen.fullscreenElement;
+    return screenfull.isFullscreen;
 }
 
 // Attempt to toggle fullscreen mode.
@@ -81,7 +81,7 @@ function toggleFullscreen() {
 
 // Sync fullscreen changes with store. An event listener is necessary because the user can
 // toggle fullscreen mode directly through the browser, and we want to react to that.
-fscreen.addEventListener('fullscreenchange', () => {
+screenfull.on('fullscreenchange', () => {
     store.setState({
         fullscreen: isFullscreen()
     });

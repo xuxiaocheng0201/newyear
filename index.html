@@ -153,9 +153,8 @@
 </div>
 
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="files/js/fscreen%401.0.1.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/screenfull.js/5.2.0/screenfull.min.js"></script>
 <script src="files/js/Stage%400.1.4.js"></script>
-<!--<script src="https://cdn.bootcdn.net/ajax/libs/screenfull.js/5.2.0/screenfull.min.js"></script>-->
 <!--<script src="https://cdn.bootcdn.net/ajax/libs/stage.js/0.8.10/stage.web.min.js"></script>-->
 <script src="files/js/MyMath.js"></script>
 <script src="files/js/SoundManager.js"></script>
@@ -172,28 +171,21 @@
             media.pause();
         }
     }
-
-    function musicInBrowserHandler() {
+    document.body.addEventListener('touchstart', () => {
         setTimeout(function () {
             musicPlay(true)
         }, 0)
-    }
+    });
 
-    document.body.addEventListener('touchstart', musicInBrowserHandler);
-    $('#yhBtn').click(e => {
+    $('#yhBtn').click(_ => {
         $('#yhBtn').hide()
         setTimeout(() => {
             start()
             fireworks();
-        }, 1600) //
+        }, 1600)
         setTimeout(() => {
-            function audioAutoPlay() {
-                var audio = document.getElementById('audioDom');
-                audio.play();
-            }
-
-            audioAutoPlay();
-        }, 800) //
+            document.getElementById('audioDom').play();
+        }, 800)
         updateConfig({
             autoLaunch: true
         });
