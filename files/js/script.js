@@ -90,6 +90,11 @@ screenfull.on('fullscreenchange', () => {
 
 // Simple state container; the source of truth.
 const store = {
+    _listeners: new Set(),
+    _dispatch(prevState) {
+        this._listeners.forEach(listener => listener(this.state, prevState))
+    },
+
     state: {
         // will be unpaused in init()
         paused: true,
@@ -119,10 +124,83 @@ const store = {
     },
 
     setState(nextState) {
+        const prevState = this.state;
         this.state = Object.assign({}, this.state, nextState);
+        this._dispatch(prevState);
+        this.persist();
     },
+
+    subscribe(listener) {
+        this._listeners.add(listener);
+        return () => this._listeners.remove(listener);
+    },
+
+    // Load / persist select state to localStorage
+    // Mutates state because `store.load()` should only be called once immediately after store is created, before any subscriptions.
+    load() {
+        const serializedData = localStorage.getItem('cm_fireworks_data');
+        if (serializedData) {
+            const {
+                schemaVersion,
+                data
+            } = JSON.parse(serializedData);
+
+            const config = this.state.config;
+            switch (schemaVersion) {
+                case '1.1':
+                    config.quality = data.quality;
+                    config.size = data.size;
+                    config.skyLighting = data.skyLighting;
+                    break;
+                case '1.2':
+                    config.quality = data.quality;
+                    config.size = data.size;
+                    config.skyLighting = data.skyLighting;
+                    config.scaleFactor = data.scaleFactor;
+                    break;
+                default:
+                    throw new Error('version switch should be exhaustive');
+            }
+            console.log(`Loaded config (schema version ${schemaVersion})`);
+        }
+        // Deprecated data format. Checked with care (it's not namespaced).
+        else if (localStorage.getItem('schemaVersion') === '1') {
+            let size;
+            // Attempt to parse data, ignoring if there is an error.
+            try {
+                const sizeRaw = localStorage.getItem('configSize');
+                size = typeof sizeRaw === 'string' && JSON.parse(sizeRaw);
+            } catch (e) {
+                console.log('Recovered from error parsing saved config:');
+                console.error(e);
+                return;
+            }
+            // Only restore validated values
+            const sizeInt = parseInt(size, 10);
+            if (sizeInt >= 0 && sizeInt <= 4) {
+                this.state.config.size = String(sizeInt);
+            }
+        }
+    },
+
+    persist() {
+        const config = this.state.config;
+        localStorage.setItem('cm_fireworks_data', JSON.stringify({
+            schemaVersion: '1.2',
+            data: {
+                quality: config.quality,
+                size: config.size,
+                skyLighting: config.skyLighting,
+                scaleFactor: config.scaleFactor
+            }
+        }));
+    }
 };
 
+
+if (!IS_HEADER) {
+    store.load();
+}
 
 // Actions
 // ---------
@@ -344,6 +422,24 @@ function renderApp(state) {
         appNodes.helpModalBody.textContent = body;
     }
 }
+
+store.subscribe(renderApp);
+
+// Perform side effects on state changes
+function handleStateChange(state, prevState) {
+    const canPlaySound = canPlaySoundSelector(state);
+    const canPlaySoundPrev = canPlaySoundSelector(prevState);
+
+    if (canPlaySound !== canPlaySoundPrev) {
+        if (canPlaySound) {
+            soundManager.resumeAll();
+        } else {
+            soundManager.pauseAll();
+        }
+    }
+}
+
+store.subscribe(handleStateChange);
 
 
 function getConfigFromDOM() {
