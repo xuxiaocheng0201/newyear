@@ -39,8 +39,7 @@
     <div class="stage-container remove">
         <div class="page hide">
             <div id="text" style="display:none;">
-                <p>倒计时<br><br>还有<span id="time"></span><br><span
-                    id="text1"></span><br><br>彩蛋:点击屏幕任意地方即可放烟花</p>
+                <p>倒计时<br><br>还有<span id="time"></span><br><span id="text1"></span></p>
             </div>
             <div class="type_words" id="contents" style="font-size:1.15rem;line-height:1.5rem;"></div>
         </div>
@@ -61,7 +60,7 @@
 
 <script>
     function musicPlay(isPlay) {
-        var media = document.querySelector('#audioDom');
+        const media = document.querySelector('#audioDom');
         if (isPlay && media.paused) {
             media.play();
         }
@@ -77,38 +76,34 @@
 
     $('#yhBtn').click(_ => {
         $('#yhBtn').hide()
-        setTimeout(() => {
-            start()
-        }, 1600)
-        setTimeout(() => {
-            document.getElementById('audioDom').play();
-        }, 800)
         updateConfig({
             autoLaunch: true
         });
+        setTimeout(() => {
+            document.getElementById('audioDom').play();
+        }, 800);
+        setTimeout(() => {
+            $('.page').removeClass('hide');
+            let str_ = ''
+            let i = 0
+            let content = document.getElementById('contents')
+            setInterval(() => {
+                let str = $("#text").html();
+                if (str_.length < str.length) {
+                    str_ = str.substring(0, ++i)
+                    content.innerHTML = '<p>' + str_ + '<span class="xx" style="opacity: 1;    color: white;">∎</span></p>' //打印时加光标
+                } else {
+                    content.innerHTML = '<p>' + str + '</p>'
+                }
+            }, 100)
+        }, 1600);
     })
 
-    function start() {
-        $('.page').removeClass('hide');
-        let str = $("#text").html();
-        let str_ = ''
-        let i = 0
-        let content = document.getElementById('contents')
-        let timer = setInterval(() => {
-            if (str_.length < str.length) {
-                str_ += str[i++]
-                content.innerHTML = '<p>' + str_ + '<span class="xx" style="opacity: 1;    color: white;">∎</span></p>' //打印时加光标
-            } else {
-                clearInterval(timer)
-                content.innerHTML = '<p>' + str_ + '</p>'
-            }
-        }, 100)
-    }
 </script>
 
 <script>
     function time() {
-        // window.setTimeout(time, 1000);
+        window.setTimeout(time, 1000);
         const seconds = 1000
         const minutes = seconds * 60
         const hours = minutes * 60
