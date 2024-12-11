@@ -61,14 +61,47 @@ function whiteOrGold() {
 }
 
 
-// Shell helpers
+
+function fitShellPositionInBoundsH(position) {
+    const edge = 0.18;
+    return (1 - edge * 2) * position + edge;
+}
+
+function fitShellPositionInBoundsV(position) {
+    return position * 0.75;
+}
+
+function getRandomShellPositionH() {
+    return fitShellPositionInBoundsH(Math.random());
+}
+
+function getRandomShellPositionV() {
+    return fitShellPositionInBoundsV(Math.random());
+}
+
+function getRandomShellSize() {
+    const baseSize = shellSizeSelector();
+    const maxVariance = Math.min(2.5, baseSize);
+    const variance = Math.random() * maxVariance;
+    const size = baseSize - variance;
+    const height = maxVariance === 0 ? Math.random() : 1 - (variance / maxVariance);
+    const centerOffset = Math.random() * (1 - height * 0.65) * 0.5;
+    const x = Math.random() < 0.5 ? 0.5 - centerOffset : 0.5 + centerOffset;
+    return {
+        size,
+        x: fitShellPositionInBoundsH(x),
+        height: fitShellPositionInBoundsV(height)
+    };
+}
+
+
+
 function makePistilColor(shellColor) {
     return (shellColor === COLOR.White || shellColor === COLOR.Gold) ? randomColor({
         notColor: shellColor
     }) : whiteOrGold();
 }
 
-// Unique shell types
 const crysanthemumShell = (size = 1) => {
     const glitter = Math.random() < 0.25;
     const singleColor = Math.random() < 0.72;
@@ -102,7 +135,6 @@ const crysanthemumShell = (size = 1) => {
     };
 };
 
-
 const ghostShell = (size = 1) => {
     // Extend crysanthemum shell
     const shell = crysanthemumShell(size);
@@ -126,7 +158,6 @@ const ghostShell = (size = 1) => {
     return shell;
 };
 
-
 const strobeShell = (size = 1) => {
     const color = randomColor({
         limitWhite: true
@@ -146,7 +177,6 @@ const strobeShell = (size = 1) => {
         pistilColor: makePistilColor(color)
     };
 };
-
 
 const palmShell = (size = 1) => {
     const color = randomColor();
@@ -265,36 +295,6 @@ const horsetailShell = (size = 1) => {
     };
 };
 
-function randomShellName() {
-    return Math.random() < 0.5 ? 'Crysanthemum' : shellNames[(Math.random() * (shellNames.length - 1) + 1) | 0];
-}
-
-function randomShell(size) {
-    // Special selection for codepen header.
-    if (IS_HEADER) return randomFastShell()(size);
-    // Normal operation
-    return shellTypes[randomShellName()](size);
-}
-
-function shellFromConfig(size) {
-    return shellTypes[shellNameSelector()](size);
-}
-
-// Get a random shell, not including processing intensive varients
-// Note this is only random when "Random" shell is selected in config.
-// Also, this does not create the shell, only returns the factory function.
-const fastShellBlacklist = ['Falling Leaves', 'Floral', 'Willow'];
-
-function randomFastShell() {
-    const isRandom = shellNameSelector() === 'Random';
-    let shellName = isRandom ? randomShellName() : shellNameSelector();
-    if (isRandom) {
-        while (fastShellBlacklist.includes(shellName)) {
-            shellName = randomShellName();
-        }
-    }
-    return shellTypes[shellName];
-}
 
 
 const shellTypes = {
@@ -313,3 +313,29 @@ const shellTypes = {
 };
 
 const shellNames = Object.keys(shellTypes);
+
+
+function randomShellName() {
+    return Math.random() < 0.5 ? 'Crysanthemum' : shellNames[(Math.random() * (shellNames.length - 1) + 1) | 0];
+}
+
+// Get a random shell, not including processing intensive varients
+// Note this is only random when "Random" shell is selected in config.
+// Also, this does not create the shell, only returns the factory function.
+const fastShellBlacklist = ['Falling Leaves', 'Floral', 'Willow'];
+
+function randomFastShell() {
+    let shellName = randomShellName();
+    while (fastShellBlacklist.includes(shellName)) {
+        shellName = randomShellName();
+    }
+    return shellTypes[shellName];
+}
+
+
+function randomShell(size) {
+    // Special selection for codepen header.
+    if (IS_HEADER) return randomFastShell()(size);
+    // Normal operation
+    return shellTypes[randomShellName()](size);
+}

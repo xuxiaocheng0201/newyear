@@ -229,14 +229,9 @@ const scaleFactorSelector = () => store.state.config.scaleFactor;
 
 // Render app UI / keep in sync with state
 const appNodes = {
-    stageContainer: '.stage-container',
-    canvasContainer: '.canvas-container',
+    stageContainer: document.querySelector('.stage-container'),
+    canvasContainer: document.querySelector('.canvas-container'),
 };
-
-// Convert appNodes selectors to dom nodes
-Object.keys(appNodes).forEach(key => {
-    appNodes[key] = document.querySelector(appNodes[key]);
-});
 
 // Perform side effects on state changes
 function handleStateChange(state, prevState) {
@@ -268,42 +263,9 @@ function init() {
 }
 
 
-function fitShellPositionInBoundsH(position) {
-    const edge = 0.18;
-    return (1 - edge * 2) * position + edge;
-}
-
-function fitShellPositionInBoundsV(position) {
-    return position * 0.75;
-}
-
-function getRandomShellPositionH() {
-    return fitShellPositionInBoundsH(Math.random());
-}
-
-function getRandomShellPositionV() {
-    return fitShellPositionInBoundsV(Math.random());
-}
-
-function getRandomShellSize() {
-    const baseSize = shellSizeSelector();
-    const maxVariance = Math.min(2.5, baseSize);
-    const variance = Math.random() * maxVariance;
-    const size = baseSize - variance;
-    const height = maxVariance === 0 ? Math.random() : 1 - (variance / maxVariance);
-    const centerOffset = Math.random() * (1 - height * 0.65) * 0.5;
-    const x = Math.random() < 0.5 ? 0.5 - centerOffset : 0.5 + centerOffset;
-    return {
-        size,
-        x: fitShellPositionInBoundsH(x),
-        height: fitShellPositionInBoundsV(height)
-    };
-}
-
-
 // Launches a shell from a user pointer event, based on state.config
 function launchShellFromConfig(event) {
-    const shell = new Shell(shellFromConfig(shellSizeSelector()));
+    const shell = new Shell(randomShell(shellSizeSelector()));
     const w = mainStage.width;
     const h = mainStage.height;
 
@@ -319,7 +281,7 @@ function launchShellFromConfig(event) {
 
 function seqRandomShell() {
     const size = getRandomShellSize();
-    const shell = new Shell(shellFromConfig(size.size));
+    const shell = new Shell(randomShell(size.size));
     shell.launch(size.x, size.height);
 
     let extraDelay = shell.starLife;
@@ -344,8 +306,8 @@ function seqRandomFastShell() {
 function seqTwoRandom() {
     const size1 = getRandomShellSize();
     const size2 = getRandomShellSize();
-    const shell1 = new Shell(shellFromConfig(size1.size));
-    const shell2 = new Shell(shellFromConfig(size2.size));
+    const shell1 = new Shell(randomShell(size1.size));
+    const shell2 = new Shell(randomShell(size2.size));
     const leftOffset = Math.random() * 0.2 - 0.1;
     const rightOffset = Math.random() * 0.2 - 0.1;
     shell1.launch(0.3 + leftOffset, size1.height);
