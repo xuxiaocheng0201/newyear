@@ -23,6 +23,7 @@
 <body>
 
 <!--<audio id="audioDom" src="https://download.kstore.space/download/2719/newyear/files/audio.mp3" preload="auto" loop="loop"></audio>-->
+<audio id="audioDom" src="https://sf6-cdn-tos.douyinstatic.com/obj/ies-music/7170534431801838367.mp3" preload="auto" loop="loop"></audio>
 
 <div id="yhBtn"
      style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff ; font-size:20px    ">
@@ -158,6 +159,7 @@
 <!--<script src="https://cdn.bootcdn.net/ajax/libs/stage.js/0.8.10/stage.web.min.js"></script>-->
 <script src="files/js/MyMath.js"></script>
 <script src="files/js/SoundManager.js"></script>
+<script src="files/js/Shell.js"></script>
 <script src="files/js/script.js"></script>
 
 <script>
@@ -222,35 +224,35 @@
 <script>
     function time() {
         window.setTimeout("time()", 1000);
-        var seconds = 1000
-        var minutes = seconds * 60
-        var hours = minutes * 60
-        var days = hours * 24
-        var years = days * 365
-        var today = new Date()
-        var todayYear = today.getFullYear()
-        var newYear = todayYear + 1
-        var lastYear = todayYear - 1
-        var todayMonth = today.getMonth() + 1
-        var todayDate = today.getDate()
-        var todayHour = today.getHours()
-        var todayMinute = today.getMinutes()
-        var todaySecond = today.getSeconds()
-        var t1 = Date.UTC(newYear, 1, 1, 0, 0, 0)
-        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond)
-        var diff = t1 - t2
-        var diff2 = t2 - t1
-        var diffYears = Math.floor(diff / years)
-        var diffDays = Math.floor((diff / days) - diffYears * 365)
-        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours)
-        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes)
-        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
+        const seconds = 1000
+        const minutes = seconds * 60
+        const hours = minutes * 60
+        const days = hours * 24
+        const years = days * 365
+        const today = new Date()
+        const todayYear = today.getFullYear()
+        const newYear = todayYear + 1
+        const lastYear = todayYear - 1
+        const todayMonth = today.getMonth() + 1
+        const todayDate = today.getDate()
+        const todayHour = today.getHours()
+        const todayMinute = today.getMinutes()
+        const todaySecond = today.getSeconds()
+        const t1 = Date.UTC(newYear, 1, 1, 0, 0, 0)
+        const t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond)
+        const diff = t1 - t2
+        const diff2 = t2 - t1
+        const diffYears = Math.floor(diff / years)
+        const diffDays = Math.floor((diff / days) - diffYears * 365)
+        const diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours)
+        const diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes)
+        const diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
             minutes) / seconds)
-        var diff2Years = Math.floor(diff2 / years)
-        var diff2Days = Math.floor((diff2 / days) - diff2Years * 365)
-        var diff2Hours = Math.floor((diff2 - (diff2Years * 365 + diff2Days) * days) / hours)
-        var diff2Minutes = Math.floor((diff2 - (diff2Years * 365 + diff2Days) * days - diff2Hours * hours) / minutes)
-        var diff2Seconds = Math.floor((diff2 - (diff2Years * 365 + diff2Days) * days - diff2Hours * hours - diff2Minutes *
+        const diff2Years = Math.floor(diff2 / years)
+        const diff2Days = Math.floor((diff2 / days) - diff2Years * 365)
+        const diff2Hours = Math.floor((diff2 - (diff2Years * 365 + diff2Days) * days) / hours)
+        const diff2Minutes = Math.floor((diff2 - (diff2Years * 365 + diff2Days) * days - diff2Hours * hours) / minutes)
+        const diff2Seconds = Math.floor((diff2 - (diff2Years * 365 + diff2Days) * days - diff2Hours * hours - diff2Minutes *
             minutes) / seconds)
         if (todayMonth === 1) {
             if (todayDate === 1) {
