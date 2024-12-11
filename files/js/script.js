@@ -1721,18 +1721,11 @@ const Spark = {
 };
 
 
-// Kick things off.
-
-function setLoadingStatus(status) {
-    document.querySelector('.loading-init__status').textContent = status;
-}
-
 // CodePen profile header doesn't need audio, just initialize.
 if (IS_HEADER) {
     init();
 } else {
     // Allow status to render, then preload assets and start app.
-    //setLoadingStatus('献给你爱的TA ❤');
     setTimeout(() => {
         soundManager.preload()
             .then(
@@ -1740,7 +1733,6 @@ if (IS_HEADER) {
                 reason => {
                     // Codepen preview doesn't like to load the audio, so just init to fix the preview for now.
                     init();
-                    // setLoadingStatus('Error Loading Audio');
                     return Promise.reject(reason);
                 }
             );

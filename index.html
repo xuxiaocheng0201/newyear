@@ -65,9 +65,11 @@
         <div class="loading-init__status"></div>
     </div>
     <div class="stage-container remove">
-        <div class="page_two hide">
-            <div id="text" style="display:none;"><p>倒计时<br><br>还有<span id="time"></span><br><span
-                    id="text1"></span><br><br>彩蛋:点击屏幕任意地方即可放烟花<span id="copyright"></span></p></div>
+        <div class="page hide">
+            <div id="text" style="display:none;">
+                <p>倒计时<br><br>还有<span id="time"></span><br><span
+                    id="text1"></span><br><br>彩蛋:点击屏幕任意地方即可放烟花</p>
+            </div>
             <div class="type_words" id="contents" style="font-size:1.15rem;line-height:1.5rem;"></div>
         </div>
         <div class="canvas-container">
@@ -155,7 +157,6 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/screenfull.js/5.2.0/screenfull.min.js"></script>
 <script src="files/js/Stage%400.1.4.js"></script>
-<!--<script src="https://cdn.bootcdn.net/ajax/libs/stage.js/0.8.10/stage.web.min.js"></script>-->
 <script src="files/js/MyMath.js"></script>
 <script src="files/js/SoundManager.js"></script>
 <script src="files/js/Shell.js"></script>
@@ -181,7 +182,6 @@
         $('#yhBtn').hide()
         setTimeout(() => {
             start()
-            fireworks();
         }, 1600)
         setTimeout(() => {
             document.getElementById('audioDom').play();
@@ -191,12 +191,8 @@
         });
     })
 
-    function fireworks() {
-        $('.page_one').addClass('hide');
-        $('.page_two').removeClass('hide');
-    }
-
     function start() {
+        $('.page').removeClass('hide');
         let str = $("#text").html();
         let str_ = ''
         let i = 0
@@ -215,7 +211,7 @@
 
 <script>
     function time() {
-        window.setTimeout("time()", 1000);
+        // window.setTimeout(time, 1000);
         const seconds = 1000
         const minutes = seconds * 60
         const hours = minutes * 60
@@ -260,5 +256,4 @@
 </script>
 
 </body>
-
 </html>
