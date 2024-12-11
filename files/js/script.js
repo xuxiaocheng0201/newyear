@@ -1,8 +1,4 @@
 'use strict';
-console.clear();
-// This is a prime example of what starts out as a simple project
-// and snowballs way beyond its intended size. It's a little clunky
-// reading/working on this single file, but here it is anyways :)
 
 const IS_MOBILE = window.innerWidth <= 640;
 const IS_DESKTOP = window.innerWidth > 800;
@@ -106,11 +102,6 @@ fscreen.addEventListener('fullscreenchange', () => {
 
 // Simple state container; the source of truth.
 const store = {
-    _listeners: new Set(),
-    _dispatch(prevState) {
-        this._listeners.forEach(listener => listener(this.state, prevState))
-    },
-
     state: {
         // will be unpaused in init()
         paused: true,
@@ -140,83 +131,10 @@ const store = {
     },
 
     setState(nextState) {
-        const prevState = this.state;
         this.state = Object.assign({}, this.state, nextState);
-        this._dispatch(prevState);
-        this.persist();
     },
-
-    subscribe(listener) {
-        this._listeners.add(listener);
-        return () => this._listeners.remove(listener);
-    },
-
-    // Load / persist select state to localStorage
-    // Mutates state because `store.load()` should only be called once immediately after store is created, before any subscriptions.
-    load() {
-        const serializedData = localStorage.getItem('cm_fireworks_data');
-        if (serializedData) {
-            const {
-                schemaVersion,
-                data
-            } = JSON.parse(serializedData);
-
-            const config = this.state.config;
-            switch (schemaVersion) {
-                case '1.1':
-                    config.quality = data.quality;
-                    config.size = data.size;
-                    config.skyLighting = data.skyLighting;
-                    break;
-                case '1.2':
-                    config.quality = data.quality;
-                    config.size = data.size;
-                    config.skyLighting = data.skyLighting;
-                    config.scaleFactor = data.scaleFactor;
-                    break;
-                default:
-                    throw new Error('version switch should be exhaustive');
-            }
-            console.log(`Loaded config (schema version ${schemaVersion})`);
-        }
-        // Deprecated data format. Checked with care (it's not namespaced).
-        else if (localStorage.getItem('schemaVersion') === '1') {
-            let size;
-            // Attempt to parse data, ignoring if there is an error.
-            try {
-                const sizeRaw = localStorage.getItem('configSize');
-                size = typeof sizeRaw === 'string' && JSON.parse(sizeRaw);
-            } catch (e) {
-                console.log('Recovered from error parsing saved config:');
-                console.error(e);
-                return;
-            }
-            // Only restore validated values
-            const sizeInt = parseInt(size, 10);
-            if (sizeInt >= 0 && sizeInt <= 4) {
-                this.state.config.size = String(sizeInt);
-            }
-        }
-    },
-
-    persist() {
-        const config = this.state.config;
-        localStorage.setItem('cm_fireworks_data', JSON.stringify({
-            schemaVersion: '1.2',
-            data: {
-                quality: config.quality,
-                size: config.size,
-                skyLighting: config.skyLighting,
-                scaleFactor: config.scaleFactor
-            }
-        }));
-    }
 };
 
-
-if (!IS_HEADER) {
-    store.load();
-}
 
 // Actions
 // ---------
@@ -451,24 +369,6 @@ function renderApp(state) {
     }
 }
 
-store.subscribe(renderApp);
-
-// Perform side effects on state changes
-function handleStateChange(state, prevState) {
-    const canPlaySound = canPlaySoundSelector(state);
-    const canPlaySoundPrev = canPlaySoundSelector(prevState);
-
-    if (canPlaySound !== canPlaySoundPrev) {
-        if (canPlaySound) {
-            soundManager.resumeAll();
-        } else {
-            soundManager.pauseAll();
-        }
-    }
-}
-
-store.subscribe(handleStateChange);
-
 
 function getConfigFromDOM() {
     return {
@@ -483,7 +383,7 @@ function getConfigFromDOM() {
         // Store value as number.
         scaleFactor: parseFloat(appNodes.scaleFactor.value)
     };
-};
+}
 
 const updateConfigNoEvent = () => updateConfig();
 appNodes.quality.addEventListener('input', updateConfigNoEvent);
@@ -1923,7 +1823,6 @@ class Shell {
             if (this.ring) {
                 const ringStartAngle = Math.random() * Math.PI;
                 const ringSquash = Math.pow(Math.random(), 2) * 0.85 + 0.15;
-                ;
 
                 createParticleArc(0, PI_2, this.starCount, 0, angle => {
                     // Create a ring, squashed horizontally
